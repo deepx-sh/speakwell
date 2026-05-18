@@ -51,7 +51,7 @@ const otpVerificationSchema = new mongoose.Schema<IOtpVerification>({
 }, { timestamps: true })
 
 otpVerificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-otpVerificationSchema.index({ email: 1 });
+otpVerificationSchema.index({ email: 1 ,type:1});
 
 const OtpVerification = mongoose.model<IOtpVerification>("OtpVerification", otpVerificationSchema);
 export default OtpVerification

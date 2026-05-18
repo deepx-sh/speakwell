@@ -156,7 +156,9 @@ const testimonialResponseSchema = new mongoose.Schema<ITestimonialResponse>(
   },
 );
 
-
+testimonialResponseSchema.index({ status: 1 });
+testimonialResponseSchema.index({ request: 1 });
+testimonialResponseSchema.index({createdAt:-1})
 const TestimonialResponse = mongoose.model<ITestimonialResponse>("TestimonialResponse", testimonialResponseSchema);
 
 export default TestimonialResponse;

@@ -1,5 +1,5 @@
 import mongoose,{Schema,Document} from "mongoose";
-
+import bcrypt from "bcryptjs";
 export interface IUser extends Document{
     name: string,
     email: string,
@@ -8,6 +8,8 @@ export interface IUser extends Document{
     isVerified: boolean,
     role: "owner",
     lastLogin?: Date | null,
+    refreshToken:string
+    comparePassword(candidatePassword:string):Promise<boolean>
 }
 const userSchema = new Schema<IUser>({
     name: {
@@ -37,7 +39,6 @@ const userSchema = new Schema<IUser>({
         type: String,
         required: [true, "Password is required"],
         minlength: [8, "Password must be at least 8 characters"],
-        select:false,
         validate: {
             validator: function (value: string) {
                 return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
@@ -68,11 +69,34 @@ const userSchema = new Schema<IUser>({
         type: Date,
         default:null
     },
+    refreshToken: {
+        type: String,
+        default: "",
+        select:false
+    }
     
 },{
         timestamps:true
 })
-    
 
+userSchema.index({ email: 1 },{ unique: true })
+
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
+
+    this.password = await bcrypt.hash(this.password, 12);
+})
+userSchema.methods.comparePassword = async function (
+    candidatePassword: string,
+): Promise<boolean>{
+    return await bcrypt.compare(candidatePassword,this.password)
+}
+
+userSchema.set("toJSON", {
+    transform: function (_doc, ret) {
+        const { password, ...rest } = ret;
+        return rest;
+    }
+})
 const User = mongoose.model<IUser>("User", userSchema);
 export default User;

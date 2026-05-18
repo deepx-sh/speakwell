@@ -67,6 +67,7 @@ const testimonialRequestSchema = new mongoose.Schema(
     },
     questions: {
       type: [questionSchema],
+      required:[true,"Questions are required"],
       validate: {
         validator: function (value: IQuestion[]) {
           return value.length >= 1 && value.length <= 8;
@@ -105,6 +106,8 @@ const testimonialRequestSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+testimonialRequestSchema.index({ status: 1 })
 
 const TestimonialRequest = mongoose.model<ITestimonialRequest>(
   "TestimonialRequest",

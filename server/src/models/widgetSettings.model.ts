@@ -88,6 +88,7 @@ const widgetSettingsSchema = new mongoose.Schema<IWidgetSettings>({
     }
 }, { timestamps: true })
 
+widgetSettingsSchema.index({ owner: 1 }, { unique: true })
 
 const WidgetSettings = mongoose.model<IWidgetSettings>("WidgetSettings", widgetSettingsSchema);
 export default WidgetSettings
