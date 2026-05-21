@@ -4,6 +4,11 @@ interface IOtpVerification{
     email: string,
     otp: string,
     type: "VERIFY_EMAIL" | "RESET_PASSWORD",
+    tempUserData?: {
+        name: string,
+        email: string,
+        hashedPassword:string
+    }
     expiresAt:Date
 }
 const otpVerificationSchema = new mongoose.Schema<IOtpVerification>({
@@ -44,6 +49,21 @@ const otpVerificationSchema = new mongoose.Schema<IOtpVerification>({
         }
     },
 
+    tempUserData: {
+        type: {
+            name: {
+            type:String,
+            trim:true
+        },
+        email: {
+            type:String
+        },
+        hashedPassword: {
+            type:String
+        }
+        },
+        default: null,
+    },
     expiresAt: {
         type: Date,
         required:true
