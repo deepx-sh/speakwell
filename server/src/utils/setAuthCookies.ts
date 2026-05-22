@@ -16,3 +16,17 @@ export const setAuthCookie=(res: Response, accessToken: string, refreshToken: st
         maxAge:7*24*60*60*1000
     })
 }
+
+export const clearAuthCookie = (res: Response) => {
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: env.NODE_ENV === "production",
+        sameSite: "lax",
+    })
+
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: env.NODE_ENV === "production",
+        sameSite: "lax",
+    })
+}
