@@ -8,7 +8,7 @@ export interface IUser extends Document{
     isVerified: boolean,
     role: "owner",
     lastLogin?: Date | null,
-    refreshToken:string
+    refreshToken:string | null
     comparePassword(candidatePassword:string):Promise<boolean>
 }
 const userSchema = new Schema<IUser>({
