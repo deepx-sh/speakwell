@@ -9,7 +9,11 @@ import { resetPasswordEmailTemplate } from "../templates/resetPasswordEmail.temp
 import { generateAccessToken } from "../utils/generateAccessToken";
 import { generateRefreshToken } from "../utils/generateRefreshToken";
 import mongoose from "mongoose";
-
+import jwt from "jsonwebtoken"
+import { env } from "../config/env";
+import { generateResetPasswordToken } from "../utils/generateResetPasswordToken";
+const OTP_COOLDOWN_MS = 60 * 1000;
+const MAX_RESEND_COUNT = 5;
 
 export const registerService = async (name: string, email: string, password: string) => {
     const existingUser = await User.findOne({
@@ -169,64 +173,85 @@ export const forgotPasswordService = async (email: string) => {
         throw new AppError("Email is not verified. Please verify your email first",403)
     }
 
-    await OtpVerification.deleteMany({
-        email,
-        type:"RESET_PASSWORD"
+    const resetToken = generateResetPasswordToken(
+        user._id.toString(),
+        user.email
+    )
+
+    const resetUrl=`${env.CLIENT_URL}/reset-password?token${resetToken}`
+    
+ 
+    await sendEmail({
+        to: email,
+        subject: "Reset your Speakwell passwored",
+        htmlContent:resetPasswordEmailTemplate(resetUrl)
     })
+}
+
+
+export const resetPasswordService = async (token: string, newPassword: string) => {
+    let decoded: { userId: string, email: string };
+
+    try {
+        decoded = jwt.verify(
+            token,
+            env.JWT_RESET_PASSWORD_TOKEN_SECRET
+        ) as {userId:string,email:string}
+    } catch (error) {
+        throw new AppError("Invalid or expired reset link",400)
+    }
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+        throw new AppError("User not found",404)
+    }
+
+    if (user.email !== decoded.email) {
+        throw new AppError("Invalid reset link",400)
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    await User.findByIdAndUpdate(decoded.userId, {
+        password: hashedPassword,
+        refreshToken:null
+    })
+}
+
+export const resendOtpService = async (email: string, type: "VERIFY_EMAIL") => {
+    const existingOtp = await OtpVerification.findOne({ email, type });
+
+    if (!existingOtp) {
+        throw new AppError("OTP request not found.Please start again",404)
+    }
+
+    if (existingOtp.resendCount >= MAX_RESEND_COUNT) {
+        throw new AppError("Maximum OTP resend attempts exceeded. Please start again",429)
+    }
+
+    const now = Date.now();
+    const lastSent = new Date(existingOtp.lastSeenAt).getTime();
+    const elapsed = now - lastSent
+    
+    if (elapsed < OTP_COOLDOWN_MS) {
+        const remainingSeconds = Math.ceil((OTP_COOLDOWN_MS - elapsed) / 1000);
+        throw new AppError(`Please wait ${remainingSeconds} seconds before requestiong another OTP`,429)
+    }
 
     const rawOtp = generateOtp();
     const hashedOtp = await bcrypt.hash(rawOtp, 10);
 
 
-    await OtpVerification.create({
-        email,
-        otp: hashedOtp,
-        type:"RESET_PASSWORD",
-        expiresAt:generateOtpExpire(10)
-    })
+    existingOtp.otp = hashedOtp;
+    existingOtp.resendCount += 1;
+    existingOtp.lastSeenAt = new Date();
+    existingOtp.expiresAt = generateOtpExpire(10);
+    await existingOtp.save();
 
     await sendEmail({
         to: email,
-        subject: "Reset your Speakwell passwored",
-        htmlContent:resetPasswordEmailTemplate(rawOtp)
+        subject: "Verify your Speakwell account",
+        htmlContent:verificationEmailTemplate(rawOtp)
     })
-}
-
-
-export const resetPasswordService = async (email: string, otp: string, newPassword: string) => {
-    const otpDoc = await OtpVerification.findOne({
-        email,
-        type:"RESET_PASSWORD"
-    })
-
-    if (!otpDoc) {
-        throw new AppError("Invalid or expired OTP",400)
-    }
-
-    if (otpDoc.expiresAt < new Date()) {
-        await otpDoc.deleteOne();
-        throw new AppError("OTP has expired. Please request a new one", 410)
-    }
-
-    const isValidOtp = await bcrypt.compare(otp, otpDoc.otp);
-    if (!isValidOtp) {
-        throw new AppError("Invalid OTP",400)
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-        throw new AppError("User not found",404)
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
-
-    await User.findOneAndUpdate(
-        { email },
-        {
-            password: hashedPassword,
-            refreshToken:null
-        }
-    )
-
-    await otpDoc.deleteOne();
 }
