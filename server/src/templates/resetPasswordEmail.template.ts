@@ -1,38 +1,32 @@
 export const resetPasswordEmailTemplate = (
-    otp:string
+    resetUrl:string
 ) => {
     return `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-      
-      <h2>Reset your password</h2>
-
-      <p>
-        We received a request to reset your password.
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
+      <h2 style="margin: 0 0 12px; font-size: 22px; color: #1C1C1A;">Reset your password</h2>
+      <p style="margin: 0 0 24px; font-size: 15px; color: #6B6860; line-height: 1.6;">
+        Someone requested a password reset for your Speakwell account.
+        If this was you, click the button below. This link expires in 10 minutes.
       </p>
-
-      <p>
-        Your password reset code is:
-      </p>
-
-      <div
+      <a
+        href="${resetUrl}"
         style="
-          font-size: 32px;
-          font-weight: bold;
-          letter-spacing: 6px;
-          margin: 20px 0;
+          display: inline-block;
+          padding: 12px 28px;
+          background: #C96B3F;
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 8px;
+          font-size: 15px;
+          font-weight: 500;
         "
       >
-        ${otp}
-      </div>
-
-      <p>
-        This code will expire in 10 minutes.
+        Reset Password
+      </a>
+      <p style="margin-top: 28px; font-size: 13px; color: #6B6860;">
+        If you did not request this, you can safely ignore this email.
+        Your password will not be changed.
       </p>
-
-      <p>
-        If you did not request this, please secure your account.
-      </p>
-
     </div>
     `
 }
