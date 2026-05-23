@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { apiResponse } from "../utils/apiResponse";
-import { registerService, loginService, logoutService, verifyEmailService, resetPasswordService, forgotPasswordService } from "../services/auth.service";
+import { registerService, loginService, logoutService, verifyEmailService, resetPasswordService, forgotPasswordService, resendOtpService } from "../services/auth.service";
 import { clearAuthCookie, setAuthCookie } from "../utils/setAuthCookies";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model";
@@ -68,9 +68,9 @@ export const forgotPasswordController = asyncHandler(async (req: Request, res: R
 })
 
 export const resetPasswordController = asyncHandler(async (req: Request, res: Response) => {
-    const { email, otp, newPassword } = req.body;
+    const { token,newPassword } = req.body;
 
-    await resetPasswordService(email, otp, newPassword);
+    await resetPasswordService(token ,newPassword);
 
     return res.status(200).json(
         apiResponse({
@@ -111,7 +111,7 @@ export const refreshTokenController = asyncHandler(async (req: Request, res: Res
    
 
     const newAccessToken = generateAccessToken(user._id.toString());
-    const newRefreshToken = generateAccessToken(user._id.toString());
+    const newRefreshToken = generateRefreshToken(user._id.toString());
 
     await User.findByIdAndUpdate(user._id, {
         refreshToken:newRefreshToken
@@ -148,6 +148,19 @@ export const logoutController = asyncHandler(async (req: Request, res: Response)
         apiResponse({
             success: true,
             message:"Logout successfully"
+        })
+    )
+})
+
+export const resendOtpController = asyncHandler(async (req: Request, res: Response) => {
+    const { email, type } = req.body;
+
+    await resendOtpService(email, type);
+
+    return res.status(200).json(
+        apiResponse({
+            success: true,
+            message:"If a pending OTP exists for this email it will be resent"
         })
     )
 })
