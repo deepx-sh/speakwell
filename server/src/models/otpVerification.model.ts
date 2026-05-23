@@ -8,7 +8,9 @@ interface IOtpVerification{
         name: string,
         email: string,
         hashedPassword:string
-    }
+    },
+    resendCount: number,
+    lastSeenAt:Date
     expiresAt:Date
 }
 const otpVerificationSchema = new mongoose.Schema<IOtpVerification>({
@@ -44,7 +46,7 @@ const otpVerificationSchema = new mongoose.Schema<IOtpVerification>({
         type: String,
         required: true,
         enum: {
-            values: ["VERIFY_EMAIL", "RESET_PASSWORD"],
+            values: ["VERIFY_EMAIL"],
             message:"Invalid OTP type"
         }
     },
@@ -63,6 +65,14 @@ const otpVerificationSchema = new mongoose.Schema<IOtpVerification>({
         }
         },
         default: null,
+    },
+    resendCount: {
+        type: Number,
+        default:0
+    },
+    lastSeenAt: {
+        type: Date,
+        default:Date.now
     },
     expiresAt: {
         type: Date,

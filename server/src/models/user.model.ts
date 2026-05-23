@@ -84,6 +84,7 @@ userSchema.index({ email: 1 },{ unique: true })
 userSchema.pre("save", async function () {
     if (!this.isModified("password")) return;
 
+    if (this.password.startsWith("$2b")) return;
     this.password = await bcrypt.hash(this.password, 12);
 })
 userSchema.methods.comparePassword = async function (
