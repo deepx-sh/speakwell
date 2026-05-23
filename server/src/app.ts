@@ -3,7 +3,7 @@ import cors from "cors"
 import errorMiddleware from "./middlewares/error.middleware";
 import { env } from "./config/env";
 import cookieParser from "cookie-parser";
-
+import authRoutes from "./routes/auth.routes"
 const app = express();
 
 app.use(cors({
@@ -15,7 +15,7 @@ app.use(cookieParser())
 app.get("/", (_req, res) => {
     res.send("Speakwell API is running");
 })
-
+app.use("/api/auth",authRoutes)
 app.use("*", (_req, res) => {
     res.status(404).json({
         success: false,
