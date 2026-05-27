@@ -16,7 +16,7 @@ app.get("/", (_req, res) => {
     res.send("Speakwell API is running");
 })
 app.use("/api/auth",authRoutes)
-app.use("*", (_req, res) => {
+app.use("/{*splat}", (_req, res) => {
     res.status(404).json({
         success: false,
         message:"Route not found"
