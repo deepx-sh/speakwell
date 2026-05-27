@@ -31,15 +31,15 @@ const otpVerificationSchema = new mongoose.Schema<IOtpVerification>({
     otp: {
         type: String,
         required: [true, "OTP is required"],
-        minlength: [6, "OTP must be 6 digit"],
-        maxlength: [6, "OTP must be 6 digit"],
+        // minlength: [6, "OTP must be 6 digit"],
+        // maxlength: [6, "OTP must be 6 digit"],
         
-        validate: {
-            validator: function (value: string) {
-                return /^\d{6}$/.test(value);
-            },
-            message:"OTP must contain exactly 6 digits"
-        }
+        // validate: {
+        //     validator: function (value: string) {
+        //         return /^\d{6}$/.test(value);
+        //     },
+        //     message:"OTP must contain exactly 6 digits"
+        // }
     },
 
     type: {
