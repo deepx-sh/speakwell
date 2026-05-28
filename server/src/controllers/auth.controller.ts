@@ -62,7 +62,7 @@ export const forgotPasswordController = asyncHandler(async (req: Request, res: R
     return res.status(200).json(
         apiResponse({
             success: true,
-            message:"If this email is registered you will receive a reset  OTP shortly"
+            message:"If this email is registered you will receive a reset OTP shortly"
         })
     )
 })
