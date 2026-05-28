@@ -125,7 +125,7 @@ export const loginService = async (email: string, password: string) => {
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-        throw new AppError("Invalid credntials", 401);
+        throw new AppError("Invalid credentials", 401);
     }
 
     const accessToken = generateAccessToken(user._id.toString());
@@ -178,12 +178,12 @@ export const forgotPasswordService = async (email: string) => {
         user.email
     )
 
-    const resetUrl=`${env.CLIENT_URL}/reset-password?token${resetToken}`
+    const resetUrl=`${env.CLIENT_URL}/reset-password?token=${resetToken}`
     
  
     await sendEmail({
         to: email,
-        subject: "Reset your Speakwell passwored",
+        subject: "Reset your Speakwell password",
         htmlContent:resetPasswordEmailTemplate(resetUrl)
     })
 }
@@ -236,7 +236,7 @@ export const resendOtpService = async (email: string, type: "VERIFY_EMAIL") => {
     
     if (elapsed < OTP_COOLDOWN_MS) {
         const remainingSeconds = Math.ceil((OTP_COOLDOWN_MS - elapsed) / 1000);
-        throw new AppError(`Please wait ${remainingSeconds} seconds before requestiong another OTP`,429)
+        throw new AppError(`Please wait ${remainingSeconds} seconds before requesting another OTP`,429)
     }
 
     const rawOtp = generateOtp();
