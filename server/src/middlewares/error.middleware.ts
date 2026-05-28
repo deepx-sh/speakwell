@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { error } from "node:console";
+
 
 const errorMiddleware = (
     error: any,
