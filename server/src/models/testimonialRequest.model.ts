@@ -6,7 +6,7 @@ interface IQuestion {
   type: "text" | "textarea" | "rating";
 }
 
-interface ITestimonialRequest {
+export interface ITestimonialRequest {
   owner: mongoose.Types.ObjectId;
   title: string;
   token: string;
@@ -14,6 +14,7 @@ interface ITestimonialRequest {
   status: "ACTIVE" | "CLOSED";
   expiresAt: Date | null;
   theme: "light" | "dark";
+  allowAnonymous: boolean;
   submissionCount: number;
 }
 
@@ -95,7 +96,10 @@ const testimonialRequestSchema = new mongoose.Schema(
       },
       default: "light",
     },
-
+    allowAnonymous: {
+      type: Boolean,
+      default:false
+    },
     submissionCount: {
       type: Number,
       default: 0,
@@ -109,6 +113,25 @@ const testimonialRequestSchema = new mongoose.Schema(
 
 testimonialRequestSchema.index({ status: 1 })
 
+testimonialRequestSchema.pre(/^find/, async function () {
+  await TestimonialRequest.updateMany(
+    {
+      status: "ACTIVE",
+      expiresAt: { $lt: new Date(), $ne:null}
+    },
+    {
+      status:"CLOSED"
+    }
+  )
+  
+})
+
+testimonialRequestSchema.set("toJSON", {
+  transform:function(_doc,ret){
+    delete (ret as any).__v;
+    return ret;
+  }
+})
 const TestimonialRequest = mongoose.model<ITestimonialRequest>(
   "TestimonialRequest",
   testimonialRequestSchema,
