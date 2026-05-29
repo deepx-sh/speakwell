@@ -4,7 +4,7 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
-  
+    "typeRoots": ["./src/types","./node_modules/@types"],
 
 
     // Environment Settings
@@ -12,7 +12,7 @@
     "module": "commonjs",
    
     "target": "es2020",
-    "types": [],
+    // "types": [],
     "esModuleInterop": true,
     // For nodejs:
     // "lib": ["esnext"],
@@ -44,5 +44,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/**/*"]
 }
