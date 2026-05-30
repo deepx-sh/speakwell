@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
-interface IAnswer {
+export interface IAnswer {
   question: string;
   answer: string;
 }
 
-interface IGeneratedTestimonial {
+export interface IGeneratedTestimonial {
   content: string;
   tone: "casual" | "professional" | "emotional";
   createdAt: Date;
 }
 
-interface ITestimonialResponse {
+export interface ITestimonialResponse {
   request: mongoose.Types.ObjectId;
   clientName: string;
-  clientEmail?: string;
-  clientCompany?: string;
-  clientAvatar?: string;
+  clientEmail?: string | null;
+  clientCompany?: string | null;
+  clientAvatar?: string | null;
   rating: number;
   answers: IAnswer[];
   generatedTestimonials: IGeneratedTestimonial[];
@@ -73,7 +73,6 @@ const testimonialResponseSchema = new mongoose.Schema<ITestimonialResponse>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "TestimonialRequest",
       required: true,
-      index: true,
     },
     clientName: {
       type: String,
@@ -98,6 +97,7 @@ const testimonialResponseSchema = new mongoose.Schema<ITestimonialResponse>(
     clientCompany: {
       type: String,
       trim: true,
+      default:null,
       maxlength: [100, "Company name too long"],
     },
     clientAvatar: {
@@ -156,8 +156,14 @@ const testimonialResponseSchema = new mongoose.Schema<ITestimonialResponse>(
   },
 );
 
-testimonialResponseSchema.index({ status: 1 });
-testimonialResponseSchema.index({ request: 1 });
+testimonialResponseSchema.pre("save", function () {
+  if (this.isPublished && this.status !== "APPROVED") {
+    this.isPublished = false;
+  }
+})
+
+testimonialResponseSchema.index({ request:1,status: 1 });
+testimonialResponseSchema.index({ request: 1,isPublished:1 });
 testimonialResponseSchema.index({createdAt:-1})
 const TestimonialResponse = mongoose.model<ITestimonialResponse>("TestimonialResponse", testimonialResponseSchema);
 
