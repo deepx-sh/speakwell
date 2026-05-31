@@ -18,7 +18,7 @@ const requiredEnvVariables = [
   "BREVO_SMTP_PASS",
   "BREVO_FROM_EMAIL",
   "CLIENT_URL",
-  "OPENAI_API_KEY",
+  // "OPENAI_API_KEY",
 ];
 
 
@@ -44,5 +44,5 @@ export const env={
   BREVO_SMTP_PASS:process.env.BREVO_SMTP_PASS as string,
   BREVO_FROM_EMAIL:process.env.BREVO_FROM_EMAIL as string,
   CLIENT_URL:process.env.CLIENT_URL as string,
-  OPENAI_API_KEY:process.env.OPENAI_API_KEY as string,
+  GEMINI_API_KEY:process.env.GEMINI_API_KEY as string,
 }
