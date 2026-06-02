@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IWidgetSettings{
+export interface IWidgetSettings{
     owner: mongoose.Types.ObjectId;
     primaryColor: string;
     theme: "light" | "dark";
