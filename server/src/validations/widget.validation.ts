@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-export const tokenPraramSchema = z.object({
+export const tokenParamSchema = z.object({
+    token:z.string().min(6,"Invalid token")
+})
+export const updateWidgetSettingsSchema = z.object({
     primaryColor: z
         .string()
         .regex(/^#([0-9A-F]{3}){1,2}$/i, "Invalid hex color")
