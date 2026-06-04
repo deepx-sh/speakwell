@@ -23,14 +23,15 @@ export const updateWidgetSettingsSchema = z.object({
     
     fontFamily: z
         .enum(["inherit", "inter", "serif"], {
-            error:()=>({message:"Invalid font family"})
+            error: () => ({ message: "Invalid font family" })
         })
         .optional(),
     
     borderRadius: z
         .enum(["none", "small", "medium", "large"], {
-            error:()=>({message:"Invalid border radius"})
-        }),
+            error: () => ({ message: "Invalid border radius" })
+        })
+        .optional(),
     
     showVerifiedBadge: z.boolean().optional(),
     showRating: z.boolean().optional(),

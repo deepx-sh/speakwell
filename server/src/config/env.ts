@@ -44,5 +44,7 @@ export const env={
   BREVO_SMTP_PASS:process.env.BREVO_SMTP_PASS as string,
   BREVO_FROM_EMAIL:process.env.BREVO_FROM_EMAIL as string,
   CLIENT_URL:process.env.CLIENT_URL as string,
-  GEMINI_API_KEY:process.env.GEMINI_API_KEY as string,
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
+  SERVER_URL:process.env.SERVER_URL as string,
+
 }
