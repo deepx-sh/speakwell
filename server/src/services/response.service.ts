@@ -3,6 +3,7 @@ import TestimonialRequest from "../models/testimonialRequest.model";
 import TestimonialResponse, { IAnswer } from "../models/testimonialResponse.model";
 import AppError from "../utils/AppError";
 import { generateTestimonial } from "./llm.service";
+import { uploadImageToCloudinary } from "../utils/cloudinaryUpload";
 
 
 type PopulatedRequest = {
@@ -96,7 +97,22 @@ export const submitResponseService = async(
 
     return response
 }
+export const uploadClientAvatarService = async(
+    responseId: string,
+    fileBuffer:Buffer
+) => {
+    const response = await TestimonialResponse.findById(responseId);
+    if (!response) throw new AppError("Response not found", 404);
 
+    const result = await uploadImageToCloudinary(
+        fileBuffer,
+        "speakwell/client-avatars",
+        responseId
+    )
+    response.clientAvatar = result.secure_url;
+    await response.save();
+    return response;
+}
 export const getResponseByRequestService = async(
     requestId: string,
     ownerId:string

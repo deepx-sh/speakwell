@@ -5,6 +5,7 @@ import TestimonialResponse from "../models/testimonialResponse.model";
 import WidgetSettings from "../models/widgetSettings.model";
 import OtpVerification from "../models/otpVerification.model";
 import AppError from "../utils/AppError";
+import { deleteImageFromCloudinary, uploadImageToCloudinary } from "../utils/cloudinaryUpload";
 
 export const getMeService = async (userId: string) => {
     const user = await User.findById(userId).select("-__v");
@@ -72,7 +73,31 @@ export const changePasswordService = async(
         refreshToken:null
     })
 }
+export const uploadAvatarService = async(
+    userId: string,
+    fileBuffer:Buffer
+) => {
+    const user = await User.findById(userId);
+    if (!user) throw new AppError("User not found", 404);
 
+    if (user.avatar && user.avatar.includes("cloudinary")) {
+        await deleteImageFromCloudinary(user.avatar)
+    }
+
+    const result = await uploadImageToCloudinary(
+        fileBuffer,
+        "speakwell/avatars",
+        userId
+    )
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { avatar: result.secure_url },
+        { new: true }
+    ).select("-__v");
+
+    return updatedUser;
+}
 export const deleteAccountService = async(
     userId: string,
     password:string
