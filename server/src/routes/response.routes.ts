@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { protect } from '../middlewares/auth.middleware';
 import validate from '../middlewares/validate.middleware';
+import { upload } from '../middlewares/upload.middleware';
 import { submitResponseSchema, approveResponseSchema, responseIdParamSchema, tokenParamSchema, requestIdParamSchema } from '../validations/response.validation';
-import { submitResponseController, getResponseByRequestController, getResponseByIdController, approveResponseController, rejectResponseController, togglePublishResponseController, deleteResponseController } from '../controllers/response.controller';
+import { submitResponseController, getResponseByRequestController, getResponseByIdController, approveResponseController, rejectResponseController, togglePublishResponseController, deleteResponseController,uploadClientAvatarController } from '../controllers/response.controller';
 
 const router = Router();
 
@@ -46,6 +47,7 @@ router.patch(
     togglePublishResponseController
 )
 
+router.patch("/:id/avatar",validate(responseIdParamSchema,"params"),upload.single("avatar"),uploadClientAvatarController)
 router.delete(
     "/:id",
     validate(responseIdParamSchema, "params"),
