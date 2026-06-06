@@ -2,7 +2,8 @@ import { Request, Response } from "express"
 import { asyncHandler } from "../utils/asyncHandler"
 import { apiResponse } from "../utils/apiResponse"
 import { clearAuthCookie } from "../utils/setAuthCookies"
-import { getMeService, updateProfileService, changePasswordService, deleteAccountService } from "../services/user.service"
+import { getMeService, updateProfileService, changePasswordService, deleteAccountService, uploadAvatarService } from "../services/user.service"
+import AppError from "../utils/AppError"
 
 export const getMeController = asyncHandler(
     async (req: Request, res: Response) => {
@@ -57,6 +58,25 @@ export const changePasswordController = asyncHandler(
     }
 )
 
+export const uploadAvatarController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const userId = req.user._id.toString();
+
+        if (!req.file) {
+            throw new AppError("No image file provided",400)
+        }
+
+        const user = await uploadAvatarService(userId, req.file.buffer);
+
+        return res.status(200).json(
+            apiResponse({
+                success: true,
+                message: "Avatar uploaded successfully",
+                data:user
+            })
+        )
+    }
+)
 export const deleteAccountController = asyncHandler(
     async (req: Request, res: Response) => {
         const userId = req.user._id.toString();
