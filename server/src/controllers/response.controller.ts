@@ -2,7 +2,8 @@ import { Request, Response } from "express"
 import { asyncHandler } from "../utils/asyncHandler"
 import { apiResponse } from "../utils/apiResponse"
 
-import { submitResponseService, getResponseByRequestService, getResponseByIdService, approveResponseService, rejectResponseService, togglePublishResponseService, deleteResponseService } from "../services/response.service"
+import { submitResponseService, getResponseByRequestService, getResponseByIdService, approveResponseService, rejectResponseService, togglePublishResponseService, deleteResponseService, uploadClientAvatarService } from "../services/response.service"
+import AppError from "../utils/AppError"
 
 export const submitResponseController = asyncHandler(
     async (req: Request, res: Response) => {
@@ -151,6 +152,29 @@ export const deleteResponseController = asyncHandler(
             apiResponse({
                 success: true,
                 message:"Response deleted successfully"
+            })
+        )
+    }
+)
+
+export const uploadClientAvatarController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        if (typeof id !== "string") {
+            throw new Error("Invalid ID")
+        }
+        if (!req.file) {
+            throw new AppError("No image file provided",400)
+        }
+
+        const response = await uploadClientAvatarService(id, req.file.buffer);
+
+        return res.status(200).json(
+            apiResponse({
+                success: true,
+                message: "Avatar uploaded successfully",
+                data:response
             })
         )
     }
