@@ -8,6 +8,7 @@ import requestRoutes from "./routes/request.routes"
 import responseRoutes from "./routes/response.routes"
 import widgetRoutes from "./routes/widget.routes";
 import userRoutes from "./routes/user.routes"
+import dashboardRoutes from "./routes/dashboard.routes"
 const app = express();
 
 app.use(cors({
@@ -23,7 +24,8 @@ app.use("/api/auth", authRoutes)
 app.use("/api/requests", requestRoutes)
 app.use("/api/responses", responseRoutes)
 app.use("/api/widget", widgetRoutes)
-app.use("/api/users",userRoutes)
+app.use("/api/users", userRoutes)
+app.use("/api/dashboard",dashboardRoutes)
 app.use("/{*splat}", (_req, res) => {
     res.status(404).json({
         success: false,
