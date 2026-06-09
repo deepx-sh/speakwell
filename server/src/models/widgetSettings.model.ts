@@ -18,7 +18,7 @@ const widgetSettingsSchema = new mongoose.Schema<IWidgetSettings>({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-        unique:true
+        // unique:true
     },
     primaryColor: {
         type: String,
