@@ -1,17 +1,20 @@
 interface ApiResponseOptions<T>{
     success: boolean;
     message: string;
-    data?:T
+    data?: T,
+    pagination?:unknown
 }
 
 export const apiResponse = <T>({
     success,
     message,
-    data
+    data,
+    pagination
 }: ApiResponseOptions<T>) => {
     return {
         success,
         message,
-        data
+        data,
+        pagination
     }
 }
