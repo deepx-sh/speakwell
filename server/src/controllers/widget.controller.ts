@@ -48,9 +48,9 @@ export const serveEmbedScriptController = asyncHandler(
             let apiBase="${apiBase}";
 
             function fetchAndRender(){
-                fetch(apiBase+"/api/widget"+token)
+                fetch(apiBase+"/api/widget/"+token)
                 .then(function(res){return res.json()})
-                .then(function(json)){
+                .then(function(json){
                     if(!json.success) return;
                     let data=json.data;
                     let settings=data.settings;
@@ -63,7 +63,7 @@ export const serveEmbedScriptController = asyncHandler(
                         "display:flex",
                         "flex-wrap:wrap",
                         "gap:16px",
-                        font-family:"+(settings.fontFamiliy==="inherit" ? "inherit" : settings.fontFamily+",sans-serif)
+                        "font-family:"+(settings.fontFamily==="inherit" ? "inherit" : settings.fontFamily+",sans-serif")
                     ].join(";");
 
                     testimonials.forEach(function(t){
@@ -72,16 +72,16 @@ export const serveEmbedScriptController = asyncHandler(
                             "background:"+(settings.theme==="dark" ? "#1a1a1a" : "#ffffff"),
                             "color:"+(settings.theme==="dark" ? "#f0efe8":"#1c1c1a"),
                             "border:1px solid "+ (settings.theme==="dark" ? "#2a2a2a": "#e5e5e5"),
-                            "border-radius:"+ getBorderRadius(settings.boderRadius),
+                            "border-radius:"+ getBorderRadius(settings.borderRadius),
                             "padding:20px 24px",
                             "max-width:420px",
                             "flex:1 1 280px",
-                        ].join(";)
+                        ].join(";")
 
                         let html="";
 
                         if(settings.showRating && t.rating){
-                            html+="<div style='color:"+ settings.primaryColor + ";font-size=18px;margin-bottom:10px'>"
+                            html+="<div style='color:"+ settings.primaryColor + ";font-size:18px;margin-bottom:10px'>"
                             +"★".repeat(t.rating)+"☆".repeat(5-t.rating)
                             +"</div>";
                         }
@@ -93,13 +93,13 @@ export const serveEmbedScriptController = asyncHandler(
                         html+="<div style='display:flex;align-items:center;gap:10px'>";
 
                         if(settings.showAvatar && t.clientAvatar){
-                        html+="<img src='"+t.clientAvatar+ "' style='width:36px;height:36px;boder-radius:50%;object-fit:cover'/>";
+                        html+="<img src='"+t.clientAvatar+ "' style='width:36px;height:36px;border-radius:50%;object-fit:cover'/>";
                             }
 
                         html+="<div>";
                         html+="<p style='margin:0;font-weight:500;font-size:14px'>"+escapeHtml(t.clientName)+"</p>";
 
-                        if(settings.showCompany && t.clientCompay){
+                        if(settings.showCompany && t.clientCompany){
                             html+="<p style='margin:2px 0 0;font-size:12px;opacity:0.6'>"+escapeHtml(t.clientCompany)+"</p>";
                         }
 
