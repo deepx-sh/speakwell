@@ -100,8 +100,10 @@ export const verifyEmailService = async (email: string, otp: string) => {
 
     await otpDoc.deleteOne();
 
+    const newUser=await User.findById(user._id).select("-password -refreshToken")
+
     return {
-        user,
+        user:newUser,
         accessToken,
         refreshToken
     }
@@ -109,7 +111,7 @@ export const verifyEmailService = async (email: string, otp: string) => {
 
 
 export const loginService = async (email: string, password: string) => {
-    const user = await User.findOne({ email }).select("+password +refreshToke");
+    const user = await User.findOne({ email }).select("+password +refreshToken");
 
     if (!user) {
         throw new AppError("Invalid credentials", 409);
