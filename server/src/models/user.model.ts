@@ -41,6 +41,7 @@ const userSchema = new Schema<IUser>({
         minlength: [8, "Password must be at least 8 characters"],
         validate: {
             validator: function (value: string) {
+                if (/^\$2[aby]\$\d{2}\$/.test(value)) return true;
                 return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
             },
             message:"Password must contain one uppercase letter, one lowercase letter, one number, and one special character"
