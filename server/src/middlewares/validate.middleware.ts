@@ -18,7 +18,11 @@ const validate = (schema: z.ZodType, target: ValidateTarget = "body") => (req: R
             errors
         })
     }
-    req[target] = result.data;
+    if (target === "query") {
+        Object.assign(req.query,result.data)
+    } else {
+        req[target] = result.data;
+    }
     next();
 }
 
