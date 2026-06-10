@@ -7,12 +7,12 @@ import { getWidgetDataController, serveEmbedScriptController, getWidgetSettingsC
 const router = Router();
 
 router.get("/embed/:token", serveEmbedScriptController);
-
+router.get("/settings",protect, getWidgetSettingsController);
 router.get("/:token", validate(tokenParamSchema, "params"), getWidgetDataController)
 
 router.use(protect);
 
-router.get("/settings", getWidgetSettingsController);
+
 router.patch("/settings", validate(updateWidgetSettingsSchema), updateWidgetSettingsController);
 router.get("/snippet/:token", validate(tokenParamSchema, "params"), getEmbedSnippetController)
 
