@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios,{type AxiosError,type InternalAxiosRequestConfig} from "axios";
 
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL + "/api",
@@ -8,18 +8,29 @@ export const api = axios.create({
     }
 })
 
+const refreshApi = axios.create({
+     baseURL: import.meta.env.VITE_API_URL + "/api",
+    withCredentials: true,
+    headers: {
+        "Content-Type":"application/json"
+    }
+})
+
+type RetryConfig = InternalAxiosRequestConfig & {
+    _retry?:boolean
+}
 let isRefreshing = false;
 let failedQueue: {
-    resolve: (value?: unknown) => void;
+    resolve: () => void;
     reject: (reason?: unknown) => void
 }[] = [];
 
-const processQueue = (error: unknown) => {
-    failedQueue.forEach((promise) => {
+const processQueue = (error: unknown ) => {
+    failedQueue.forEach(({resolve,reject}) => {
         if (error) {
-            promise.reject(error)
+            reject(error)
         } else {
-            promise.resolve()
+            resolve()
         }
     })
 
@@ -28,33 +39,33 @@ const processQueue = (error: unknown) => {
 
 api.interceptors.response.use(
     (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-
-        if (error.response?.status === 401 && !originalRequest._retry) {
+    async (error:AxiosError) => {
+        const originalRequest = error.config as RetryConfig | undefined;
+     
+        if (error.response?.status !== 401 || !originalRequest || originalRequest._retry) {
+            return Promise.reject(error)
+        }
             if (isRefreshing) {
-                return new Promise((resolve, reject) => {
+                return new Promise<void>((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
                 })
-                    .then(() => api(originalRequest))
-                    .catch((err)=>Promise.reject(err))
+                    .then(() => {
+                        return api(originalRequest)
+                    })  
             }
             originalRequest._retry = true;
             isRefreshing = true;
 
             try {
-                await api.post("/auth/refresh-token");
+                await refreshApi.post("/auth/refresh-token");
                 processQueue(null);
                 return api(originalRequest)
             } catch (refreshError) {
                 processQueue(refreshError);
-                window.location.href = "/login";
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing=false
             }
         }
-
-        return Promise.reject(error)
-    }
+    
 )
