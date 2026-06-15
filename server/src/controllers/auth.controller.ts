@@ -48,9 +48,9 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
         apiResponse({
             success: true,
             message: "Login successful",
-            data: 
+            data: {
                 user
-            
+            }
         })
     )
 })
