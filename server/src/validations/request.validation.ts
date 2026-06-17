@@ -39,11 +39,7 @@ export const createRequestSchema = z.object({
         .boolean()
         .default(false),
     
-    expiresAt: z
-        .iso
-        .datetime({ message: "Invalid date format" })
-        .optional()
-        .nullable()
+    expiresAt: z.string().optional().nullable()
 })
 
 export const updateRequestSchema = z.object({
