@@ -35,7 +35,7 @@ const DashboardOverviewPage = () => {
     },
     {
       label: "Pending review",
-      value: stats?.published,
+      value: stats?.pendingReview,
       icon: Clock,
       highlight:stats?.pendingReview ? stats.pendingReview >0 :false
     }, {
