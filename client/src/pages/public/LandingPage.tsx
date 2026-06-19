@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Link2, MessageSquareText, Code2, Star } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LandingPage() {
+    const {user} =useAuth()
     return (
         <div className="min-h-screen bg-background text-text-primary">
             {/* Navbar */}
@@ -16,7 +18,9 @@ export default function LandingPage() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Link
+                        {!user ? (
+                            <>
+                                <Link
                             to="/login"
                             className="text-sm text-text-secondary transition hover:text-text-primary"
                         >
@@ -28,6 +32,15 @@ export default function LandingPage() {
                         >
                             Get started
                         </Link>
+                            </>
+                        ) : (
+                             <Link
+                            to="/dashboard"
+                            className="rounded-md bg-text-primary px-4 py-2 text-sm font-medium text-background transition hover:bg-accent-hover"
+                        >
+                            Dashboard
+                        </Link>   
+                        )}
                     </div>
                 </nav>
             </header>
@@ -56,7 +69,17 @@ export default function LandingPage() {
                     </p>
 
                     <div className="mt-8 flex items-center justify-center gap-3">
-                        <Link
+                        {user ? (
+                            <Link
+                            to="/dashboard"
+                            className="inline-flex items-center gap-2 rounded-md bg-text-primary px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-hover"
+                        >
+                            Go to dashboard
+                            <ArrowRight className="h-4 w-4"/>
+                        </Link>
+
+                        ) : (
+                                <Link
                             to="/register"
                             className="inline-flex items-center gap-2 rounded-md bg-text-primary px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-hover"
                         >
@@ -64,6 +87,7 @@ export default function LandingPage() {
                             <ArrowRight className="h-4 w-4"/>
                         </Link>
 
+                        )}
                         <a href="#how-it-works"
                             className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium text-text-primary transition hover:bg-surface">
                             See how it works
@@ -196,10 +220,17 @@ export default function LandingPage() {
                     </h2>
 
                     <div className="mt-8">
-                        <Link
+                        {user ? (
+                            <Link
+                            to="/dashboard"
+                            className="inline-flex items-center gap-2 rounded-md bg-text-primary px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-hover"
+                        >Dashboard</Link>
+                        ) : (
+                                <Link
                             to="/register"
                             className="inline-flex items-center gap-2 rounded-md bg-text-primary px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-hover"
                         >Get started for free</Link>
+                        )}
                     </div>
 
                     <p className="mt-4 text-xs text-text-muted">
