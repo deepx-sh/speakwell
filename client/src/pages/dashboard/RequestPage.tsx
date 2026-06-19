@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 import { AlertDialog,AlertDialogAction,AlertDialogCancel,AlertDialogContent,AlertDialogDescription,AlertDialogFooter,AlertDialogHeader,AlertDialogTitle } from "@/components/ui/alert-dialog"
+import axios from "axios"
 
 const RequestPage = () => {
     const { requests, isLoading, mutate } = useRequests()
@@ -37,8 +38,10 @@ const RequestPage = () => {
             await closeRequest(id)
             toast.success("Request closed")
             mutate()
-        } catch (err:any) {
-            toast.error(err?.response?.data?.message ?? "Failed to close request")
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err?.response?.data?.message ?? "Failed to close request")
+            }
         } finally {
             setActionLoading(null)
         }
@@ -54,8 +57,10 @@ const RequestPage = () => {
             await deleteRequest(requestToDelete)
             toast.success("Request deleted")
             mutate()
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message ?? "Failed to delete request")
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err?.response?.data?.message ?? "Failed to delete request")
+            }
         } finally {
             setActionLoading(null)
             setRequestToDelete(null)
