@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate} from "react-router-dom";
 import { toast } from "sonner"
 import { ArrowLeft,Copy,Check,Star,CheckCircle2,XCircle,Globe,Trash2,Loader2,MessageSquareQuote,Pencil } from "lucide-react";
 import { useRequestDetail,useResponsesByRequest,approveResponse,rejectResponse,togglePublishResponse,deleteResponse } from "@/hooks/useResponses";
@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import axios from "axios";
 
 const statusConfig = {
     PENDING:{label:"Pending",className:"border-warning/20 bg-warning/10 text-warning"},
@@ -55,8 +56,10 @@ const RequestDetailPage = () => {
             toast.success("Testimonial approved")
             mutate()
             setApproveTarget(null)
-        } catch (err:any) {
-            toast.error(err?.response?.data?.message ?? "Failed to approve")
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err?.response?.data?.message ?? "Failed to approve")
+            }
         } finally {
             setActionLoading(null)
         }
@@ -68,8 +71,10 @@ const RequestDetailPage = () => {
             await rejectResponse(responseId)
             toast.success("Testimonial rejected")
             mutate()
-        } catch (err:any) {
-            toast.error(err?.response?.data?.message ?? "Failed to reject")
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err?.response?.data?.message ?? "Failed to reject")
+            }
         } finally {
             setActionLoading(null)
         }
@@ -81,8 +86,10 @@ const RequestDetailPage = () => {
             const res = await togglePublishResponse(responseId)
             toast.success(res.data.data?.isPublished ? "Published to widget" : "Unpublished from widget")
             mutate()
-        } catch (err:any) {
-            toast.error(err?.response?.data?.message ?? "Failed to update")
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err?.response?.data?.message ?? "Failed to update")
+            }
         } finally {
             setActionLoading(null)
         }
@@ -95,8 +102,10 @@ const RequestDetailPage = () => {
             await deleteResponse(deleteTarget)
             toast.success("Response deleted")
             mutate()
-        } catch (err:any) {
-            toast.error(err?.response?.data?.message || "Failed to delete")
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err?.response?.data?.message || "Failed to delete")
+            }
         } finally {
             setActionLoading(null)
             setDeleteTarget(null)
