@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import axios from "axios";
 
 
 type CreateRequestFormData = z.infer<typeof createRequestSchema>
@@ -74,8 +75,10 @@ const CreateRequestPage = () => {
             const res = await createRequestApi(data)
             toast.success("Testimonial request created!")
             navigate(`/dashboard/requests/${res.data.data?._id}`)
-        } catch (err:any) {
-            toast.error(err?.response?.data?.message ?? "Failed to create request. Try again.")
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                 toast.error(err?.response?.data?.message ?? "Failed to create request. Try again.")
+            }
         }
     }
   return (
