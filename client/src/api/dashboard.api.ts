@@ -6,7 +6,7 @@ export const getDashboardStatsApi = () =>
 
 export const getDashboardTestimonialsApi = (params: {
     status?: string;
-    isPublished?: string;
+    isPublished?: boolean;
     requestId?: string;
     page?: number;
     limit?: number;
