@@ -100,3 +100,13 @@ export interface IPagination{
     hasNextPage: boolean;
     hasPrevPage: boolean;
 }
+
+export interface IFilters{
+    status?: "PENDING" | "APPROVED" | "REJECTED";
+    isPublished?: boolean;
+    requestId?: string;
+    page: number;
+    limit: number;
+    sortBy: "createdAt" | "rating";
+    order:"asc"| "desc"
+}
