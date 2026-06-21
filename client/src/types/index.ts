@@ -71,7 +71,7 @@ export interface IWidgetSettings{
     showRating: boolean;
     showAvatar: boolean;
     showCompany: boolean;
-    maxTestimonialsToShow: boolean;
+    maxTestimonialsToShow: number;
 }
 
 export interface IDashboardStats{
