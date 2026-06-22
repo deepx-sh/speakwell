@@ -9,6 +9,7 @@ import responseRoutes from "./routes/response.routes"
 import widgetRoutes from "./routes/widget.routes";
 import userRoutes from "./routes/user.routes"
 import dashboardRoutes from "./routes/dashboard.routes"
+import { globalLimiter } from "./middlewares/rateLimit.middleware";
 const app = express();
 
 app.use(cors({
@@ -16,6 +17,7 @@ app.use(cors({
     credentials:true
 }));
 app.use(express.json());
+app.use("/api",globalLimiter)
 app.use(cookieParser())
 app.get("/", (_req, res) => {
     res.send("Speakwell API is running");
