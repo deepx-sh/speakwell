@@ -4,11 +4,13 @@ import validate from '../middlewares/validate.middleware';
 import { upload } from '../middlewares/upload.middleware';
 import { submitResponseSchema, approveResponseSchema, responseIdParamSchema, tokenParamSchema, requestIdParamSchema } from '../validations/response.validation';
 import { submitResponseController, getResponseByRequestController, getResponseByIdController, approveResponseController, rejectResponseController, togglePublishResponseController, deleteResponseController,uploadClientAvatarController } from '../controllers/response.controller';
+import { submitResponseLimiter } from '../middlewares/rateLimit.middleware';
 
 const router = Router();
 
 router.post(
     "/submit/:token",
+    submitResponseLimiter,
     validate(tokenParamSchema, "params"),
     validate(submitResponseSchema),
     submitResponseController
