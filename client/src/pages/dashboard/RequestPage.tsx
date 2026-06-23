@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { Plus, Copy, Check, MoreVertical, Lock, Trash2, ExternalLink, FileText, Users } from "lucide-react"
+import { Plus, Copy, Check, MoreVertical, Lock, Trash2, ExternalLink, FileText, Users, Pencil } from "lucide-react"
 import { useRequests, closeRequest, deleteRequest } from "@/hooks/useRequests"
 import { cn } from "@/lib/utils"
 
@@ -15,6 +15,7 @@ import { AlertDialog,AlertDialogAction,AlertDialogCancel,AlertDialogContent,Aler
 import axios from "axios"
 
 const RequestPage = () => {
+    const navigate=useNavigate()
     const { requests, isLoading, mutate } = useRequests()
     const [copiedToken, setCopiedToken] = useState<string | null>(null)
     const [requestToDelete, setRequestToDelete] = useState<string | null>(null)
@@ -198,7 +199,13 @@ const RequestPage = () => {
                                                               Close request
                                                           </DropdownMenuItem>
                                                       )}
-
+                                                         {request.status === "ACTIVE" && (
+                                                          <DropdownMenuItem onClick={() => navigate(`/dashboard/requests/${request._id}/edit`)}>
+                                                              <Pencil className="mr-2 h-4 w-4" />
+                                                              Edit
+                                                          </DropdownMenuItem>
+                                                      )}
+                                                    
                                                       <DropdownMenuItem onClick={() => setRequestToDelete(request._id)} className="text-error">
                                                           <Trash2 className="mr-2 h-4 w-4" />
                                                           Delete
