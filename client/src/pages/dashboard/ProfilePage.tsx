@@ -196,7 +196,7 @@ const ProfilePage = () => {
                           disabled={isProfileSubmitting || !isProfileDirty}
                           size="sm"
                       >
-                          {isProfileDirty ? (
+                          {isProfileSubmitting ? (
                               <Loader2 className="h-4 w-4 animate-spin"/>
                           ) : (
                                   "Save changes"
