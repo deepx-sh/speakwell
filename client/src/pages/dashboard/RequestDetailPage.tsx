@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate} from "react-router-dom";
+import { useParams, useNavigate, Link} from "react-router-dom";
 import { toast } from "sonner"
 import { ArrowLeft,Copy,Check,Star,CheckCircle2,XCircle,Globe,Trash2,Loader2,MessageSquareQuote,Pencil } from "lucide-react";
 import { useRequestDetail,useResponsesByRequest,approveResponse,rejectResponse,togglePublishResponse,deleteResponse } from "@/hooks/useResponses";
@@ -149,7 +149,14 @@ const RequestDetailPage = () => {
                           )}
                       >
                           {request.status==="ACTIVE"?"Active":"Closed"}
-                      </Badge>
+                          </Badge>
+                          
+                          <Link to={`/dashboard/requests/${request._id}/edit`}>
+                              <Button variant="outline" size="sm">
+                                  <Pencil className="mr-2 h-3.5 w-3.5" />
+                                  Edit
+                              </Button>
+                          </Link>
                   </div>
                   <p className="mt-1 text-sm text-text-secondary">
                       {responses.length} submission{responses.length !== 1 ? "s" : ""} ·{" "}
