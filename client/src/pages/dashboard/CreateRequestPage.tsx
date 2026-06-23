@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {z} from "zod"
 import { toast } from "sonner"
 import { Plus, Trash2, GripVertical, ArrowLeft, Loader2 } from "lucide-react";
-import { createRequestApi } from "@/api/request.api";
+import { createRequestApi,updateRequestApi } from "@/api/request.api";
 import { createRequestSchema} from "@/validations/request.validation";
-
+import { useRequestDetail } from "@/hooks/useResponses";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import axios from "axios";
+import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 type CreateRequestFormData = z.infer<typeof createRequestSchema>
@@ -43,27 +45,42 @@ const QUESTION_TYPES = [
 
 const CreateRequestPage = () => {
     const navigate = useNavigate()
-    
+    const { id } = useParams<{ id: string }>()
+    const isEditMode = !!id;
+
+    const { request, isLoading: isRequestLoading } = useRequestDetail(isEditMode ? id : "")
     const { register,
         handleSubmit,
         control,
         watch,
         setValue,
-        formState:{errors,isSubmitting}
-     } = useForm<CreateRequestFormData>({
+        reset,
+        formState: { errors, isSubmitting }
+    } = useForm<CreateRequestFormData>({
         resolver: zodResolver(createRequestSchema),
         defaultValues: {
             title: "",
             questions: DEFAULT_QUESTIONS,
             theme: "light",
             allowAnonymous: false,
-            expiresAt:null
+            expiresAt: null
         }
-     })
+    })
     
-    const { fields,append,remove} = useFieldArray({
+    useEffect(() => {
+        if (isEditMode && request) {
+            reset({
+                title: request.title,
+                questions: request.questions,
+                theme: request.theme,
+                allowAnonymous: request.allowAnonymous,
+                expiresAt: request.expiresAt
+            })
+        }
+    }, [isEditMode, request, reset])
+    const { fields, append, remove } = useFieldArray({
         control,
-        name:"questions"
+        name: "questions"
     })
 
     const watchedTheme = watch("theme")
@@ -72,14 +89,48 @@ const CreateRequestPage = () => {
 
     const onSubmit = async (data: CreateRequestFormData) => {
         try {
-            const res = await createRequestApi(data)
-            toast.success("Testimonial request created!")
-            navigate(`/dashboard/requests/${res.data.data?._id}`)
-        } catch (err:unknown) {
+            if (isEditMode) {
+                await updateRequestApi(id!, data)
+                toast.success("Request updated successfully")
+                navigate(`/dashboard/requests/${id}`)
+            } else {
+                const res = await createRequestApi(data)
+                toast.success("Testimonial request created!")
+                navigate(`/dashboard/requests/${res.data.data?._id}`)
+            }
+        } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
-                 toast.error(err?.response?.data?.message ?? "Failed to create request. Try again.")
+                toast.error(err?.response?.data?.message ?? `Failed to ${isEditMode ? "update" : "create"} request.Try again`)
             }
         }
+    }
+
+    if (isEditMode && isRequestLoading) {
+        return (
+            <div className="space-y-4">
+                <Skeleton className="h-8 w-64"/>
+                <Skeleton className="h-96 w-full"/>
+            </div>
+        )
+    }
+
+    if (isEditMode && !isRequestLoading && !request) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+                <p className="text-sm font-medium text-text-primary">
+                    Request not found
+                </p>
+
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={()=>navigate("/dashboard/requests")}
+                >
+                    Back to requests
+                </Button>
+            </div>
+        )
     }
   return (
       <div className="space-y-6">
@@ -88,18 +139,18 @@ const CreateRequestPage = () => {
           <div className="flex items-center gap-3">
               <Button variant="outline"
                   size="sm"
-                  onClick={()=>navigate("/dashboard/requests")}
+                  onClick={()=>navigate(isEditMode ? `/dashboard/requests/${id}`:"/dashboard/requests")}
               >
                   <ArrowLeft className="h-4 w-4"/>
               </Button>
 
               <div>
                   <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-                      New request
+                        {isEditMode ? "Edit request":"New request"}
                   </h1>
 
                   <p className="mt-1 text-sm text-text-secondary">
-                      Create a shareable link to collect testimonials.
+                        {isEditMode ? "Update your testimonial request settings":" Create a shareable link to collect testimonials."}
                   </p>
               </div>
           </div>
@@ -335,6 +386,12 @@ const CreateRequestPage = () => {
                                       Link  auto-closes after this date.
                                   </p>
                               </div>
+
+                              {isEditMode && request?.status === "CLOSED" && (
+                                  <p className="rounded-md bg-warning/10 px-3 py-2 text-xs text-warning">
+                                      This request is closed. Saving changes won't reopen it.
+                                  </p>
+                              )}
                           </CardContent>
                       </Card>
 
@@ -347,10 +404,12 @@ const CreateRequestPage = () => {
                           {isSubmitting ? (
                               <>
                                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  Creating...
+                                  {isEditMode ? "Saving":"Creating"}
                               </>
-                          ) : (
-                                  "Create request"
+                          ) : isEditMode ? (
+                                  "Save changes"
+                              ) : (
+                                      "Create request"
                           )}
                       </Button>
                   </div>
