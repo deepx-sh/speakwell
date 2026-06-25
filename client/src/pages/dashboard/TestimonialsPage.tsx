@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Select,SelectContent,SelectItem,SelectTrigger,SelectValue } from "@/components/ui/select"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const statusConfig = {
     PENDING:{label:"Pending",className:"border-warning/20 bg-warning/10 text-warning"},
@@ -195,9 +196,16 @@ const TestimonialsPage = () => {
                                     <Link key={t._id} to={`/dashboard/testimonials/${t._id}`} className="block">
                                         <Card className="border-border bg-surface transition hover:border-text-muted overflow-hidden">
                                             <CardContent className="flex items-center gap-3 p-4">
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-sm font-medium text-text-primary">
+                                                {/* <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-sm font-medium text-text-primary">
                                                     {t.clientName?.charAt(0)?.toUpperCase() || "?"}
-                                                </div>
+                                                </div> */}
+                                                <Avatar className="h-10 w-10">
+                                                                          <AvatarImage src={t.clientAvatar ?? undefined} />
+                                                                          <AvatarFallback className="text-base">
+                                                                              {t.clientName.charAt(0).toUpperCase()}
+                                                                          </AvatarFallback>
+                                                                      </Avatar>
+                                                
 
                                                 <div className="min-w-0 flex-1 overflow-hidden">
                                                     <div className="flex items-center gap-2">
