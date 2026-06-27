@@ -1,7 +1,30 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, Link2, MessageSquareText, Code2, Star } from "lucide-react";
+import { ArrowRight, Link2, MessageSquareText, Code2, Star,Feather } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
+const REVIEWS=[
+  {
+    "rating": 5,
+    "content": "Fantastic service and great attention to detail. The team delivered exactly what we needed.",
+    "name": "Sophia Carter",
+        "company": "Foundar",
+    "fname":"S"
+  },
+  {
+    "rating": 4,
+    "content": "Smooth collaboration and high-quality work. Communication was clear throughout the project.",
+    "name": "Daniel Kim",
+      "company": "Loop Studio",
+    "fname":"D"
+  },
+  {
+    "rating": 5,
+    "content": "Professional, reliable, and exceeded our expectations. We'd happily work together again.",
+    "name": "Emily Johnson",
+      "company": "Pixel Forge",
+    "fname":"E"
+  }
+]
 export default function LandingPage() {
     const {user} =useAuth()
     return (
@@ -12,7 +35,7 @@ export default function LandingPage() {
                 <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
                     <div className="flex items-center gap-2">
                         <div className="flex h-7 w-7 items-center justify-center rounded-md bg-text-primary">
-                            <Sparkles className="h-4 w-4 text-background"/>
+                            <Feather className="h-4 w-4 text-background"/>
                         </div>
                         <span className="text-[15px] font-medium">SpeakWell</span>
                     </div>
@@ -50,7 +73,7 @@ export default function LandingPage() {
             <section className="mx-auto max-w-6xl px-6 pt-24 pb-20 md:pt-32 md:pb-28">
                 <div className="mx-auto max-w-3xl text-center">
                     <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-text-secondary">
-                        <Sparkles className="h-3 w-3" />
+                        <Feather className="h-3 w-3" />
                         AI-powered testimonial generation
                     </div>
 
@@ -167,28 +190,30 @@ export default function LandingPage() {
                         </p>
                     </div>
 
-                    <div className="mx-auto max-w-md rounded-lg border border-border bg-surface p-6 shadow-md">
-                        <div className="mb-3 flex items-center gap-1 text-info">
-                            {Array.from({ length: 5 }).map((_, i) => (
+                    <div className="grid gap-6 md:grid-cols-3">
+                        {REVIEWS.map((r) => (
+                            <div className="rounded-lg border border-border bg-surface p-6" key={r.name}>
+                                <div className="mb-3 flex items-center gap-1 text-info">
+                            {Array.from({ length: r.rating }).map((_, i) => (
                                 <Star key={i} className="h-4 w-4 fill-current"/>
                             ))}
                         </div>
 
                         <p className="text-sm leading-relaxed text-text-primary">
-                            Honestly didn't expect the redesign to be done this fast. The new
-                            checkout flow alone cut our cart abandonment by a noticeable amount within
-                            the first week. Communication throught was clear and direct exactly what we needed.
+                            {r.content}
                         </p>
 
                         <div className="mt-5 flex items-center gap-3">
                             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-sm font-medium">
-                                P
+                                {r.fname}
                             </div>
                             <div>
-                                <p className="text-sm font-medium">Shruti Sharma</p>
-                                <p className="text-xs text-text-muted">Foundar, Loop Studio ✅ Verified via Speakwell</p>
+                                        <p className="text-sm font-medium">{r.name}</p>
+                                <p className="text-xs text-text-muted">{r.company} ✅ Verified via Speakwell</p>
                             </div>
                         </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -244,7 +269,7 @@ export default function LandingPage() {
                 <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
                     <div className="flex items-center gap-2">
                         <div className="flex h-6 w-6 items-center justify-center rounded-md bg-text-primary">
-                            <Sparkles className="h-3.5 w-3.5 text-background"/>
+                            <Feather className="h-3.5 w-3.5 text-background"/>
                         </div>
                         <span className="text-sm font-medium">Speakwell</span>
                     </div>
