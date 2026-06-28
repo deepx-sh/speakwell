@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import {SWRConfig} from "swr"
 import './index.css'
 import { AuthProvider } from './context/AuthProvider.tsx'
-import { AppRouter } from './router/index.tsx'
+import AppRouter from './router/AppRouter.tsx'
 import  {Toaster} from "@/components/ui/sonner.tsx"
 import { ErrorBoundary } from './components/shared/ErrorBoundary.tsx'
 
