@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
 import LandingPage from "@/pages/public/LandingPage";
@@ -74,4 +74,3 @@ export const router = createBrowserRouter([
         element:<NotFound/>
     }
 ])
-export const AppRouter=()=><RouterProvider router={router} />
