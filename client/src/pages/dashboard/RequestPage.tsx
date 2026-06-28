@@ -223,7 +223,7 @@ const RequestPage = () => {
           {/* Delete confirmation */}
 
           <AlertDialog open={!!requestToDelete} onOpenChange={(open) => !open && setRequestToDelete(null)}>
-              <AlertDialogContent>
+              <AlertDialogContent className="bg-black ring-0">
                   <AlertDialogHeader>
                       <AlertDialogTitle>Delete this request?</AlertDialogTitle>
                       <AlertDialogDescription>

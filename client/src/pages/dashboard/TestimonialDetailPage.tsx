@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom"
 import useSWR from "swr"
 import { toast } from "sonner"
 
-import { ArrowLeft,Star,CheckCircle2,XCircle,Globe,Trash2,Loader2,Pencil,Mail,Building2,Sparkles,ExternalLink } from "lucide-react"
+import { ArrowLeft,Star,CheckCircle2,XCircle,Globe,Trash2,Loader2,Pencil,Mail,Building2,Feather,ExternalLink } from "lucide-react"
 import { getResponseByIdApi } from "@/api/response.api"
 import { approveResponse,rejectResponse,togglePublishResponse,deleteResponse } from "@/hooks/useResponses"
 
@@ -231,7 +231,7 @@ const TestimonialDetailPage = () => {
                       </p>
                       {!response.approvedTestimonial && (
                           <span className="flex items-center gap-1 text-xs text-text-muted">
-                              <Sparkles className="h-3 w-3" />
+                              <Feather className="h-3 w-3" />
                               AI generated
                           </span>
                       )}
@@ -359,7 +359,7 @@ const TestimonialDetailPage = () => {
           )}
 
           {/* approve / edit dialog */}
-          <Dialog open={isApproveOpen} onOpenChange={setIsApproveOpen}>
+          <Dialog open={isApproveOpen} onOpenChange={setIsApproveOpen} >
               <DialogContent className="sm:max-w-lg">
                   <DialogHeader>
                       <DialogTitle>Review testimonial</DialogTitle>
@@ -392,7 +392,7 @@ const TestimonialDetailPage = () => {
 
           {/* delete confirmation */}
           <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-              <AlertDialogContent>
+              <AlertDialogContent className="bg-black ring-0">
                   <AlertDialogHeader>
                       <AlertDialogTitle>Delete this response?</AlertDialogTitle>
                       <AlertDialogDescription>

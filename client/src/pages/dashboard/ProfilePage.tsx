@@ -333,7 +333,7 @@ const ProfilePage = () => {
                   setDeleteError(null)
               }
           }}>
-              <AlertDialogContent>
+              <AlertDialogContent className="bg-black ring-0">
                   <AlertDialogHeader>
                       <AlertDialogTitle>
                           Delete your account?

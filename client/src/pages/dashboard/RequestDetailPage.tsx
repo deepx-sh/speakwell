@@ -401,7 +401,7 @@ const RequestDetailPage = () => {
           
           {/* Delete confirmation */}
           <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
-              <AlertDialogContent>
+              <AlertDialogContent className="bg-black ring-0">
                   <AlertDialogHeader>
                       <AlertDialogTitle>Delete this response?</AlertDialogTitle>
                       <AlertDialogDescription>
