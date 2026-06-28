@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
-import { Sparkles, Eye, EyeOff, Loader2 } from "lucide-react"
+import { Feather, Eye, EyeOff, Loader2 } from "lucide-react"
 import { loginApi } from "@/api/auth.api"
 import { useAuth } from "@/hooks/useAuth"
 import { loginSchema } from "@/validations/auth.validation"
@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card"
+import axios from "axios"
 
 type LoginFormData = z.infer<typeof loginSchema>
 
@@ -34,20 +35,20 @@ const LoginPage = () => {
 
         try {
             const res = await loginApi(data);
-            console.log(res);
-            
             setUser(res.data.data?.user ?? null);
             toast.success("Welcome back!")
             navigate("/dashboard")
-        } catch (err: any) {
-            console.log(err);
-            
-            const message = err?.response?.data?.message ?? "Something went wrong. Please try again."
+        } catch (err: unknown) {
+           
+            let message="Something went wrong. Please try again."
+            if (axios.isAxiosError(err)) {
+                 message = err?.response?.data?.message  
             
             if (err?.response?.status == 403 && message.toLowerCase().includes("verify")) {
                 toast.info("Please verify your email first")
                 navigate("/verify-email", { state: data.email })
                 return
+            }
             }
 
             setServerError(message);
@@ -58,7 +59,7 @@ const LoginPage = () => {
           <div className="w-full max-w-sm">
               <Link to="/" className="mb-8 flex items-baseline justify-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-text-primary">
-                      <Sparkles className="h-4 w-4 text-background"/>
+                      <Feather className="h-4 w-4 text-background"/>
                   </div>
                   <span className="text-base font-medium text-text-primary">
                       Speakwell

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import {  Loader2, MailCheck, ArrowLeft, Sparkles } from "lucide-react"
+import {  Loader2, MailCheck, ArrowLeft, Feather } from "lucide-react"
 import { forgotPasswordApi } from "@/api/auth.api"
 import { forgotPasswordSchema } from "@/validations/auth.validation"
 import { Button } from "@/components/ui/button"
@@ -40,7 +40,7 @@ const ForgotPasswordPage = () => {
           <div className="w-full max-w-sm">
               <Link to="/" className="mb-8 flex items-center justify-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-text-primary">
-                      <Sparkles className="h-4 w-4 text-background"/>
+                      <Feather className="h-4 w-4 text-background"/>
                   </div>
                   
                   <span className="text-base font-medium text-text-primary">

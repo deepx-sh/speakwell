@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod";
-import { Sparkles, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Feather, Eye, EyeOff, Loader2 } from "lucide-react";
 import { registerApi } from "@/api/auth.api";
 import { registerSchema } from "@/validations/auth.validation";
 import { toast } from "sonner"
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import axios from "axios";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -37,9 +38,11 @@ const RegisterPage = () => {
             await registerApi(data);
             toast.success("Account created successfully! Please check your email for verification.")
             navigate("/verify-email", { state: { email: data.email } });
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message ?? "Something went wrong. Please try again.")
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                 toast.error(err?.response?.data?.message ?? "Something went wrong. Please try again.")
             setServerError(err?.response?.data?.message ?? "Something went wrong. Please try again")
+            }
         }
     }
   return (
@@ -47,7 +50,7 @@ const RegisterPage = () => {
           <div className="w-full max-w-sm">
               <Link to="/" className="mb-8 flex items-center justify-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-text-primary">
-                      <Sparkles className="h-4 w-4 text-background"/>
+                      <Feather className="h-4 w-4 text-background"/>
                   </div>
                   
                   <span className="text-base font-medium text-text-primary">

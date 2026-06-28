@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import {toast} from "sonner"
-import { Sparkles,Star,Loader2,CheckCircle2,Upload,XCircle } from "lucide-react"
+import { Feather,Star,Loader2,CheckCircle2,Upload,XCircle } from "lucide-react"
 
 
 import { getRequestByTokenApi } from "@/api/request.api"
@@ -299,7 +299,7 @@ const TestimonialFormPage = () => {
               {/* logo */}
               <div className="mb-6 flex items-center justify-center gap-2">
                   <div className="flex h-7 w-7 items-center justify-center rounded-md bg-text-primary">
-                      <Sparkles className="h-4 w-4 text-background"/>
+                      <Feather className="h-4 w-4 text-background"/>
                   </div>
 
                   <span className="text-sm text-text-secondary">Powered by Speakwell</span>

@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { toast } from "sonner"
-import { Sparkles, Loader2, MailCheck } from "lucide-react"
+import { Feather, Loader2, MailCheck } from "lucide-react"
 import { verifyEmailApi, resendOtpApi } from "@/api/auth.api"
 import { useAuth } from "@/hooks/useAuth"
 import { Button } from "@/components/ui/button"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import axios from "axios"
 
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
@@ -98,9 +99,11 @@ const VerifyEmailPage = () => {
             setUser(res.data.data?.user ?? null)
             toast.success("Email verified successfully")
             navigate("/dashboard")
-        } catch (err:any) {
-            const message = err?.response?.data?.message ?? "Invalid or expired code. Please try again"
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                const message = err?.response?.data?.message ?? "Invalid or expired code. Please try again"
             setError(message)
+            }
             setOtp(Array(OTP_LENGTH).fill(""))
             inputRefs.current[0]?.focus()
         } finally {
@@ -118,12 +121,14 @@ const VerifyEmailPage = () => {
             setCooldown(RESEND_COOLDOWN)
             setOtp(Array(OTP_LENGTH).fill(""))
             inputRefs.current[0]?.focus()
-        } catch (err:any) {
-            const message = err?.response?.data?.message ?? "Failed to resend OTP"
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                const message = err?.response?.data?.message ?? "Failed to resend OTP"
             toast.error(message)
 
             const match = message.match(/(\d+)\s*seconds?/)
             if(match) setCooldown(parseInt(match[1],10))
+            }
         } finally {
             setIsResending(false)
         }
@@ -138,7 +143,7 @@ const VerifyEmailPage = () => {
                   className="mb-8 flex items-center justify-center gap-2"
               >
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-text-primary">
-                      <Sparkles className="h-4 w-4 text-background"/>
+                      <Feather className="h-4 w-4 text-background"/>
                   </div>
                   <span className="text-base font-medium text-text-primary">
                       Speakwell

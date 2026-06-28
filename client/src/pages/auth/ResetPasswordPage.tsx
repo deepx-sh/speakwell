@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
-import { Sparkles, Eye, EyeOff, Loader2, CheckCircle2, XCircle } from "lucide-react"
+import { Feather, Eye, EyeOff, Loader2, CheckCircle2, XCircle } from "lucide-react"
 import { resetPasswordApi } from "@/api/auth.api"
 import { resetPasswordSchema } from "@/validations/auth.validation"
 
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card,CardContent,CardHeader,CardTitle,CardDescription } from "@/components/ui/card"
+import axios from "axios"
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 
@@ -51,8 +52,10 @@ const ResetPasswordPage = () => {
                 confirmPassword:data.confirmPassword
             })
             setIsSuccess(true)
-        } catch (err:any) {
-            setServerError(err?.response?.data?.message ?? "This reset link is invalid or has expired")
+        } catch (err:unknown) {
+            if (axios.isAxiosError(err)) {
+                 setServerError(err?.response?.data?.message ?? "This reset link is invalid or has expired")
+            }
         }
     }
 
@@ -62,7 +65,7 @@ const ResetPasswordPage = () => {
           <div className="w-full max-w-sm">
               <Link to="/" className="mb-8 flex items-center justify-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-text-primary">
-                      <Sparkles className="h-4 w-4 text-background"/>
+                      <Feather className="h-4 w-4 text-background"/>
                   </div>
                   
                   <span className="text-base font-medium text-text-primary">
