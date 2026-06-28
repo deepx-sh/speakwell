@@ -8,10 +8,9 @@ export const questionSchema = z.object({
         .max(200, "Question too long"),
     
     required: z
-        .boolean()
-        .default(true),
-    
-    type: z.enum(["text", "textarea", "rating"]).default("textarea")
+        .boolean(),
+        
+    type: z.enum(["text", "textarea", "rating"])
 })
 
 
@@ -28,9 +27,9 @@ export const createRequestSchema = z.object({
         .max(8, "Maximum 8 questions allowed"),
     
     theme: z
-        .enum(["light", "dark"]).default("light"),
+        .enum(["light", "dark"]),
     
-    allowAnonymous: z.boolean().default(false),
+    allowAnonymous: z.boolean(),
     
     expiresAt: z.string().optional().nullable()
 })

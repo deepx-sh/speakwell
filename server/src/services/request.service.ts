@@ -108,7 +108,7 @@ export const updateRequestService = async(
     const request = await TestimonialRequest.findOneAndUpdate(
         { _id: requestId, owner: ownerId },
         { ...data },
-        {new:true,runValidators:true}
+        {returnDocument:"after",runValidators:true}
     )
 
     if (!request) {
@@ -129,7 +129,7 @@ export const closeRequestService = async(
     const request = await TestimonialRequest.findOneAndUpdate(
         { _id: requestId, owner: ownerId },
         { status: "CLOSED" },
-        {new:true}
+        {returnDocument:"after"}
     )
 
     if (!request) {
