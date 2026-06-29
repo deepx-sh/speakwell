@@ -1,7 +1,7 @@
 import { UploadApiResponse } from "cloudinary";
 import cloudinary from "../config/cloudinary";
 import AppError from "./AppError";
-import { buffer } from "node:stream/consumers";
+
 
 export const uploadImageToCloudinary = (
     buffer: Buffer,
