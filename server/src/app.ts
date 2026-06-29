@@ -10,11 +10,12 @@ import widgetRoutes from "./routes/widget.routes";
 import userRoutes from "./routes/user.routes"
 import dashboardRoutes from "./routes/dashboard.routes"
 import { globalLimiter } from "./middlewares/rateLimit.middleware";
+import helmet from "helmet";
 
 const app = express();
 
 app.set("trust proxy", 1)
-
+app.use(helmet())
 const allowedOrigins = [
     env.CLIENT_URL,
     "http://localhost:5173"
