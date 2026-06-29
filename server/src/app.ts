@@ -10,17 +10,49 @@ import widgetRoutes from "./routes/widget.routes";
 import userRoutes from "./routes/user.routes"
 import dashboardRoutes from "./routes/dashboard.routes"
 import { globalLimiter } from "./middlewares/rateLimit.middleware";
+
 const app = express();
 
+app.set("trust proxy", 1)
+
+const allowedOrigins = [
+    env.CLIENT_URL,
+    "http://localhost:5173"
+]
 app.use(cors({
-    origin: env.CLIENT_URL,
-    credentials:true
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true)
+        
+        if (allowedOrigins.includes(origin)) {
+            callback(null,true)
+        } else {
+            callback(new Error(`CORD blocked: ${origin}`))
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders:["Content-Type","Authorization"]
 }));
+
 app.use(express.json());
-app.use("/api",globalLimiter)
+app.use(express.urlencoded({ extended: true, limit: "10kb" }))
 app.use(cookieParser())
+app.use("/api",globalLimiter)
+
 app.get("/", (_req, res) => {
-    res.send("Speakwell API is running");
+    res.status(200).json({
+        success: true,
+        message: "Speakwell API is running",
+        version:"1.0.0"
+    })
+})
+
+app.get("/health", (_req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "healthy",
+        timestamp:new Date().toISOString()
+    })
 })
 app.use("/api/auth", authRoutes)
 app.use("/api/requests", requestRoutes)
