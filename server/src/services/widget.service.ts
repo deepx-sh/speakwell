@@ -78,7 +78,7 @@ export const updateWidgetSettingsService = async (
         { owner: ownerId },
         { ...data },
         {
-            new: true,
+            returnDocument: "after",
             upsert: true,
             runValidators: true
         }
