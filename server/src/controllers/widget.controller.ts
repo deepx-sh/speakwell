@@ -16,8 +16,6 @@ export const getWidgetDataController = asyncHandler(
         const data = await getWidgetDataService(token);
 
         res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
         return res.status(200).json(
             apiResponse({
@@ -150,12 +148,9 @@ export const serveEmbedScriptController = asyncHandler(
         })();
         `.trim();
 
+        res.setHeader("Content-Type", "application/javascript");
+        res.setHeader("Cache-Control", "public,max-age=60");
         res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-        res.setHeader("Content-Type", "application/javascript; charset=utf-8");
-        res.setHeader("Cache-Control", "public, max-age=300"); 
-        res.setHeader("X-Content-Type-Options", "nosniff");
 
         return res.send(script);
     }
