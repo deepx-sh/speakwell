@@ -5,7 +5,7 @@ export const setAuthCookie=(res: Response, accessToken: string, refreshToken: st
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: env.NODE_ENV==="production" ? "none":"lax",
         maxAge:15*60*1000
     })
 
@@ -21,12 +21,12 @@ export const clearAuthCookie = (res: Response) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: env.NODE_ENV==="production" ? "none":"lax",
     })
 
     res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: env.NODE_ENV==="production" ? "none":"lax",
     })
 }
