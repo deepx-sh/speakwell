@@ -16,6 +16,7 @@ export const getWidgetDataController = asyncHandler(
         const data = await getWidgetDataService(token);
 
         res.setHeader("Access-Control-Allow-Origin", "*");
+         res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
 
         return res.status(200).json(
             apiResponse({
@@ -148,9 +149,11 @@ export const serveEmbedScriptController = asyncHandler(
         })();
         `.trim();
 
+         res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
         res.setHeader("Content-Type", "application/javascript");
         res.setHeader("Cache-Control", "public,max-age=60");
-        res.setHeader("Access-Control-Allow-Origin", "*");
+       
 
         return res.send(script);
     }
