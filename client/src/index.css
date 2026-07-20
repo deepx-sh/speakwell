@@ -68,3 +68,7 @@ body{
   background: rgba(255, 255, 255, 0.15);
   color:var(--color-text-primary)
 }
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
