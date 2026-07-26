@@ -298,7 +298,7 @@ const WidgetSettingsPage = () => {
                       </CardContent>
                   </Card>
 
-                  <Button onClick={handleSave} disabled={isSaving} className="w-full" size="lg">
+                  <Button onClick={handleSave} disabled={isSaving} className="w-full hover:bg-card hover:cursor-pointer" size="lg">
                       {isSaving ? (
                           <Loader2 className="h-4 w-4 animate-spin"/>
                       ) : (
@@ -423,7 +423,7 @@ const WidgetSettingsPage = () => {
                                           variant="outline"
                                           size="lg"
                                           onClick={handleCopySnippet}
-                                          className="w-full"
+                                          className="w-full hover:bg-card hover:cursor-pointer"
                                       >
                                           {copied ? (
                                               <>
