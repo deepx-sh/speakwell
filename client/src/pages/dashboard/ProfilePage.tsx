@@ -287,7 +287,7 @@ const ProfilePage = () => {
                           )}
                       </div>
 
-                      <Button type="submit" disabled={isPasswordSubmitting} size="sm">
+                      <Button type="submit" disabled={isPasswordSubmitting} className="hover:bg-card hover:cursor-pointer" size="sm">
                           {isPasswordSubmitting ? (
                             <Loader2 className="h-4 w-4 animate-spin"/>
                           ) : (
